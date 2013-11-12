@@ -1,0 +1,19 @@
+name: CreditShops
+description: 'CreditShops is a plugin for Bukkit Minecraft servers that lets owners set prices of items and then sell them to players.'
+main: com.domsplace.CreditShops.CreditShopsPlugin
+authors: [Dominic, Jordan]
+website: http://domsplace.com/
+version: '1.00'
+softdepend: [Vault]
+commands:
+   creditshops:
+      description: Reload the CreditShops Configuration.
+      usage: /<command> [reload]
+      permission: CreditShops.creditshops
+permissions:
+   CreditShops.*:
+     description: Gives access to all CreditShops permissions.
+     children:
+       CreditShops.creditshops: true
+   CreditShops.creditshops:
+     description: Allows access to the creditshops command.
