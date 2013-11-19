@@ -10,10 +10,17 @@ commands:
       description: Reload the CreditShops Configuration.
       usage: /<command> [reload]
       permission: CreditShops.creditshops
+   price:
+      description: Get's the price of an item by name, or the item you're holding.
+      usage: /<command> (item)
+      permission: CreditShops.price
 permissions:
    CreditShops.*:
      description: Gives access to all CreditShops permissions.
      children:
        CreditShops.creditshops: true
+       CreditShops.price: true
    CreditShops.creditshops:
      description: Allows access to the creditshops command.
+   CreditShops.price:
+     description: Allows access to the price command.

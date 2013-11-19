@@ -17,7 +17,7 @@
 package com.domsplace.CreditShops.Bases;
 
 import com.domsplace.CreditShops.DataManagers.ConfigManager;
-import com.domsplace.CreditShops.CreditConomyPlugin;
+import com.domsplace.CreditShops.CreditShopsPlugin;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -52,7 +52,7 @@ public class Base extends RawBase {
     public static final String TAB = "    ";
     
     public static boolean DebugMode = false;
-    public static CreditConomyPlugin plugin;
+    public static CreditShopsPlugin plugin;
     
     public static String ChatDefault = ChatColor.GRAY.toString();
     public static String ChatImportant = ChatColor.BLUE.toString();
@@ -571,11 +571,11 @@ public class Base extends RawBase {
     }
     
     //Plugin Utils
-    public static void setPlugin(CreditConomyPlugin plugin) {
+    public static void setPlugin(CreditShopsPlugin plugin) {
         Base.plugin = plugin;
     }
     
-    public static CreditConomyPlugin getPlugin() {
+    public static CreditShopsPlugin getPlugin() {
         return plugin;
     }
     

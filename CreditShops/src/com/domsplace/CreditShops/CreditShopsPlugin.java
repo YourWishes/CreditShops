@@ -17,11 +17,8 @@
 package com.domsplace.CreditShops;
 
 import com.domsplace.CreditShops.Threads.ConfigSaveThread;
-import com.domsplace.CreditShops.Bases.DomsThread;
-import com.domsplace.CreditShops.Bases.BukkitCommand;
-import com.domsplace.CreditShops.Bases.DataManager;
-import com.domsplace.CreditShops.Bases.PluginHook;
-import com.domsplace.CreditShops.Bases.Base;
+import com.domsplace.CreditShops.Commands.*;
+import com.domsplace.CreditShops.Bases.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,10 +26,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author      Dominic
  * @since       12/11/2013
  */
-public class CreditConomyPlugin extends JavaPlugin {
+public class CreditShopsPlugin extends JavaPlugin {
     private boolean enabled = false;
     
     //Commands
+    private PriceCommand priceCommand;
     
     //Listeners
     
@@ -51,6 +49,7 @@ public class CreditConomyPlugin extends JavaPlugin {
         }
         
         //Load Commands
+        this.priceCommand = new PriceCommand();
         
         //Load Listeners
         

@@ -2,6 +2,7 @@ package com.domsplace.CreditShops.Hooks;
 
 import com.domsplace.CreditShops.Bases.PluginHook;
 import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public class VaultHook extends PluginHook {
     private Permission permission = null;
     private Chat chat = null;
+    private Economy economy = null;
     
     public VaultHook() {
         super("Vault");
@@ -26,6 +28,14 @@ public class VaultHook extends PluginHook {
     public Chat getChat() {
         try {
             return chat;
+        } catch(NoClassDefFoundError e) {
+            return null;
+        }
+    }
+    
+    public Economy getEconomy() {
+        try {
+            return economy;
         } catch(NoClassDefFoundError e) {
             return null;
         }
@@ -59,11 +69,26 @@ public class VaultHook extends PluginHook {
         }
     }
     
+    private boolean setupEconomy() {
+        try {
+            RegisteredServiceProvider<Economy> provider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+            if (provider != null) {
+                economy = provider.getProvider();
+            }
+
+            return (economy != null);
+        } catch(NoClassDefFoundError e) {
+            economy = null;
+            return false;
+        }
+    }
+    
     @Override
     public void onHook() {
         super.onHook();
         this.setupPermission();
         this.setupChat();
+        this.setupEconomy();
     }
     
     @Override
@@ -71,5 +96,6 @@ public class VaultHook extends PluginHook {
         super.onUnhook();
         this.permission = null;
         this.chat = null;
+        this.economy = null;
     }
 }

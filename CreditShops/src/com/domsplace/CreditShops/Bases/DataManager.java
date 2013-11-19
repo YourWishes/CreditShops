@@ -18,6 +18,7 @@ package com.domsplace.CreditShops.Bases;
 
 import com.domsplace.CreditShops.DataManagers.ConfigManager;
 import com.domsplace.CreditShops.DataManagers.PluginManager;
+import com.domsplace.CreditShops.DataManagers.WorthManager;
 import com.domsplace.CreditShops.Enums.ManagerType;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class DataManager extends Base {
     
     public static final PluginManager PLUGIN_MANAGER = new PluginManager();
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
+    public static final WorthManager WORTH_MANAGER = new WorthManager();
     
     private static void registerManager(DataManager manager) {
         DataManager.MANAGERS.add(manager);

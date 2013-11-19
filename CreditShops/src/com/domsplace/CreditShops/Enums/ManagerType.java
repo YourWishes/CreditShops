@@ -5,6 +5,7 @@ import com.domsplace.CreditShops.Bases.DomsEnum;
 public class ManagerType extends DomsEnum {
     public static final ManagerType CONFIG = new ManagerType("Configuration");
     public static final ManagerType PLUGIN = new ManagerType("Plugin");
+    public static final ManagerType WORTH = new ManagerType("Worth");
     
     //Instance
     private String type;
