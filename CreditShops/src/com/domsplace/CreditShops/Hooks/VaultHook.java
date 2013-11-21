@@ -19,6 +19,7 @@ public class VaultHook extends PluginHook {
     
     public Permission getPermission() {
         try {
+            this.setupPermission();
             return permission;
         } catch(NoClassDefFoundError e) {
             return null;
@@ -27,6 +28,7 @@ public class VaultHook extends PluginHook {
     
     public Chat getChat() {
         try {
+            this.setupChat();
             return chat;
         } catch(NoClassDefFoundError e) {
             return null;
@@ -35,6 +37,7 @@ public class VaultHook extends PluginHook {
     
     public Economy getEconomy() {
         try {
+            this.setupEconomy();
             return economy;
         } catch(NoClassDefFoundError e) {
             return null;

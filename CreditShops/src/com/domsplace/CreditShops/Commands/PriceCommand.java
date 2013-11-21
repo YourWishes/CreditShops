@@ -65,8 +65,8 @@ public class PriceCommand extends BukkitCommand {
         } catch(Exception e) {} catch(Error e) {}
         
         sendMessage(sender, "The worth of " + ChatImportant + 
-                item.toHumanString() + ChatDefault + " is " + ChatImportant + 
-                worth + ChatDefault + " each.");
+                item.toHumanString().replaceAll(ChatDefault, ChatImportant) + ChatDefault + " is " + ChatImportant + 
+                v + ChatDefault + " each.");
         return true;
     }
 }
