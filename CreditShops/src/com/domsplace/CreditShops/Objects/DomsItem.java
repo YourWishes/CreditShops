@@ -363,6 +363,59 @@ public class DomsItem {
         if(item == null || item.isEmpty()) return null;
         return item.get(0);
     }
+
+    public static void removeItem(DomsItem item, int amount, Inventory inv) {        
+        ItemStack[] inventory = inv.getContents();
+        for(int i = 0; i < inventory.length; i++) {
+            if(amount <= 0) break;
+            ItemStack is = inventory[i];
+            if(is == null) continue;
+            
+            int size = is.getAmount();
+            DomsItem dItem = DomsItem.createItem(is);
+            if(dItem == null || dItem.isAir()) continue;
+            
+            if(!dItem.compare(item)) continue;
+            
+            //Same Item
+            if(size <= amount) {
+                inv.setItem(i, null);
+                is = null;
+                amount -= size;
+                continue;
+            }
+            
+            is.setAmount(size - amount);
+            amount = 0;
+        }
+    }
+
+    public static boolean hasItem(DomsItem item, int amount, Inventory inv) {
+        ItemStack[] inventory = inv.getContents();
+        for(int i = 0; i < inventory.length; i++) {
+            if(amount <= 0) return true;
+            ItemStack is = inventory[i];
+            if(is == null) continue;
+            
+            int size = is.getAmount();
+            DomsItem dItem = DomsItem.createItem(is);
+            if(dItem == null || dItem.isAir()) continue;
+            
+            if(!dItem.compare(item)) continue;
+            
+            //Same Item
+            if(size <= amount) {
+                amount -= size;
+                if(amount <= 0) return true;
+                continue;
+            }
+            
+            is.setAmount(size - amount);
+            amount = 0;
+            return true;
+        }
+        return false;
+    }
     
     private static long NEXT_ID = Long.MIN_VALUE;
     

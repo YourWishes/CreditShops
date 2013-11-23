@@ -22,6 +22,7 @@ import com.domsplace.CreditShops.Exceptions.InvalidItemException;
 import com.domsplace.CreditShops.Hooks.VaultHook;
 import com.domsplace.CreditShops.Objects.DomsItem;
 import com.domsplace.CreditShops.Objects.ItemPricer;
+import com.domsplace.CreditShops.Objects.SubCommandOption;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -32,6 +33,7 @@ import org.bukkit.command.CommandSender;
 public class PriceCommand extends BukkitCommand {
     public PriceCommand() {
         super("price");
+        this.addSubCommandOption(SubCommandOption.ITEM_OPTION);
     }
     
     @Override

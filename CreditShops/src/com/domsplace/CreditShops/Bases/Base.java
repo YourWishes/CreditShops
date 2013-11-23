@@ -18,6 +18,7 @@ package com.domsplace.CreditShops.Bases;
 
 import com.domsplace.CreditShops.DataManagers.ConfigManager;
 import com.domsplace.CreditShops.CreditShopsPlugin;
+import com.domsplace.CreditShops.Hooks.VaultHook;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -992,5 +993,35 @@ public class Base extends RawBase {
         if(type == null) return true;
         if(type.equals(Material.AIR)) return true;
         return !type.isSolid();
+    }
+    
+    //Economy Utils
+    public static boolean useEcon() {
+        return VaultHook.VAULT_HOOK.isHooked() && VaultHook.VAULT_HOOK.getEconomy() != null;
+    }
+    
+    public static double getBalance(String player) {
+        try {
+            return VaultHook.VAULT_HOOK.getEconomy().getBalance(player);
+        } catch(Exception e) {} catch(Error e) {}
+        return 0.0d;
+    }
+    
+    public static String formatEcon(double amt) {
+        try {
+            return VaultHook.VAULT_HOOK.getEconomy().format(amt);
+        } catch(Exception e) { } catch(Error e) {}
+        return Base.twoDecimalPlaces(amt);
+    }
+    
+    public static void chargePlayer(String player, double amt) {
+        try {
+            if(amt == 0) return;
+            if(amt < 0) {
+                VaultHook.VAULT_HOOK.getEconomy().depositPlayer(player, -amt);
+            } else if(amt > 0) {
+                VaultHook.VAULT_HOOK.getEconomy().withdrawPlayer(player, amt);
+            }
+        } catch(Exception e) {} catch(Error e) {}
     }
 }

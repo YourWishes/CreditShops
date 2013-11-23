@@ -17,9 +17,10 @@
 package com.domsplace.CreditShops.Objects;
 
 import com.domsplace.CreditShops.Bases.Base;
+import com.domsplace.CreditShops.Exceptions.InvalidItemException;
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,6 +30,8 @@ import org.bukkit.entity.Player;
  */
 public class SubCommandOption extends Base {
     public static final SubCommandOption PLAYERS_OPTION = new SubCommandOption("[PLAYER]");
+    public static final SubCommandOption ITEM_OPTION = new SubCommandOption("[ITEM]");
+    public static final SubCommandOption SHOP_OPTION = new SubCommandOption("[SHOP]");
     
     //Instance
     private String option;
@@ -70,6 +73,15 @@ public class SubCommandOption extends Base {
             for(Player p : Base.getOnlinePlayers(sender)) {
                 returnV.add(p.getName());
             }
+        } else if(this.compare(SubCommandOption.ITEM_OPTION)) {
+            for(Material m : Material.values()) {
+                if(m.equals(Material.AIR)) continue;
+                returnV.add(m.name());
+            }
+        } else if(this.compare(SubCommandOption.SHOP_OPTION)) {
+            for(Shop s : Shop.getShops()) {
+                returnV.add(s.getName());
+            }
         } else {
             returnV.add(this.option);
         }
@@ -77,7 +89,9 @@ public class SubCommandOption extends Base {
     }
     
     public static String reverse(String s, CommandSender sender) {
-        if(Bukkit.getPlayer(s) != null) return SubCommandOption.PLAYERS_OPTION.option;
+        if(Base.getPlayer(sender, s) != null) return SubCommandOption.PLAYERS_OPTION.option;
+        if(Shop.getShop(s) != null) return SubCommandOption.SHOP_OPTION.option;
+        try {if(DomsItem.guessItem(s) != null) return SubCommandOption.ITEM_OPTION.option;} catch(InvalidItemException e){}
         return s;
     }
     

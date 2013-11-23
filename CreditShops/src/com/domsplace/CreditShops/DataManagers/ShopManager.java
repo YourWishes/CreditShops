@@ -16,9 +16,9 @@
 
 package com.domsplace.CreditShops.DataManagers;
 
-import com.domsplace.CreditShops.Bases.Base;
 import com.domsplace.CreditShops.Bases.DataManager;
 import com.domsplace.CreditShops.Enums.ManagerType;
+import com.domsplace.CreditShops.Objects.Shop;
 import java.io.File;
 import java.io.IOException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,12 +27,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author      Dominic
  * @since       11/10/2013
  */
-public class ConfigManager extends DataManager {
+public class ShopManager extends DataManager {
+    public static File STORE_FOLDER = new File(getDataFolder(), "stores");
+    
     private YamlConfiguration config;
     private File configFile;
     
-    public ConfigManager() {
-        super(ManagerType.CONFIG);
+    public ShopManager() {
+        super(ManagerType.SHOP);
     }
     
     public YamlConfiguration getCFG() {
@@ -41,29 +43,18 @@ public class ConfigManager extends DataManager {
     
     @Override
     public void tryLoad() throws IOException {
-        this.configFile = new File(getDataFolder(), "config.yml");
-        if(!this.configFile.exists()) configFile.createNewFile();
-        this.config = YamlConfiguration.loadConfiguration(configFile);
+        if(!STORE_FOLDER.exists()) STORE_FOLDER.mkdir();
         
-        /*** GENERATE DEFAULT CONFIG ***/
-        df("debug", false);
+        for(Shop s : Shop.getShops()) {
+            if(s == null) continue;
+            if(s.equals(Shop.GLOBAL_SHOP)) continue;
+            s.deregister();
+            s = null;
+        }
         
-        df("colors.default", "&7");
-        df("colors.important", "&9");
-        df("colors.error", "&c");
-        
-        df("money.startingbalance", 100.0d);
-        
-        df("cost.createshop.price", 100.0d);
-        df("cost.createsign.price", 100.0d);
-        df("cost.createsign.refundprice", 50.0d);
-        
-        //Store Values
-        Base.DebugMode = this.config.getBoolean("debug", false);
-        
-        Base.ChatDefault = loadColor("default");
-        Base.ChatImportant = loadColor("important");
-        Base.ChatError = loadColor("error");
+        for(File f : STORE_FOLDER.listFiles()) {
+            Shop.loadShop(f.getName());
+        }
         
         //Save Data
         this.trySave();
@@ -71,7 +62,9 @@ public class ConfigManager extends DataManager {
     
     @Override
     public void trySave() throws IOException {
-        this.config.save(configFile);
+        for(Shop s : Shop.getShops()) {
+            s.save();
+        }
     }
     
     private void df(String key, Object o) {

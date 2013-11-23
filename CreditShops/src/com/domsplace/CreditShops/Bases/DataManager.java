@@ -16,13 +16,12 @@
 
 package com.domsplace.CreditShops.Bases;
 
-import com.domsplace.CreditShops.DataManagers.ConfigManager;
-import com.domsplace.CreditShops.DataManagers.PluginManager;
-import com.domsplace.CreditShops.DataManagers.WorthManager;
+import com.domsplace.CreditShops.DataManagers.*;
 import com.domsplace.CreditShops.Enums.ManagerType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * @author      Dominic
@@ -33,6 +32,7 @@ public class DataManager extends Base {
     
     public static final PluginManager PLUGIN_MANAGER = new PluginManager();
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
+    public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
     public static final WorthManager WORTH_MANAGER = new WorthManager();
     
     private static void registerManager(DataManager manager) {
@@ -62,6 +62,15 @@ public class DataManager extends Base {
         }
         
         return true;
+    }
+
+    public static YamlConfiguration removeFromYml(String string, YamlConfiguration yml) {
+        YamlConfiguration newYML = new YamlConfiguration();
+        for(String s : yml.getKeys(true)) {
+            if(s.startsWith(string)) continue;
+            newYML.set(s, yml.get(s));
+        }
+        return newYML;
     }
     
     //Instance

@@ -14,13 +14,35 @@ commands:
       description: Get's the price of an item by name, or the item you're holding.
       usage: /<command> (item)
       permission: CreditShops.price
+   shop:
+      description: Open a shop (or server shop if no shop name is entered).
+      usage: /<command> [shop]
+      aliases: [store, openshop, viewshop, openstore, viewstore]
+      permission: CreditShops.shop
+   createshop:
+      description: Open a shop (or server shop if no shop name is entered).
+      usage: /<command> [shop]
+      aliases: [createstore, storecreate, shopcreate]
+      permission: CreditShops.createshop
 permissions:
    CreditShops.*:
      description: Gives access to all CreditShops permissions.
      children:
        CreditShops.creditshops: true
        CreditShops.price: true
+       CreditShops.shopsign: true
+       CreditShops.shop: true
+       CreditShops.createshop: true
+       CreditShops.override: true
    CreditShops.creditshops:
      description: Allows access to the creditshops command.
    CreditShops.price:
      description: Allows access to the price command.
+   CreditShops.shopsign:
+     description: Allows access to create Shop Signs.
+   CreditShops.shop:
+     description: Allows acces to the shop command.
+   CreditShops.createshop:
+     description: Allows acces to the createshop command.
+   CreditShops.override:
+     description: Allows acces to bypass shop sign breaking.
