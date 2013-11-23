@@ -16,6 +16,7 @@
 
 package com.domsplace.CreditShops.Commands;
 
+import com.domsplace.CreditShops.Bases.Base;
 import com.domsplace.CreditShops.Bases.BukkitCommand;
 import com.domsplace.CreditShops.Bases.DataManager;
 import com.domsplace.CreditShops.Objects.Shop;
@@ -51,11 +52,25 @@ public class CreditShopsCommand extends BukkitCommand {
                 Shop.GLOBAL_SHOP.open(getPlayer(sender));
                 return true;
             }
+            
+            if(c.equals("save")) {
+                sendMessage(sender, "Flushing Data...");
+                sendMessage(sender, "Done, Saved " + (DataManager.saveAll() ? "Successfully" : "Unsuccessfully!"));
+                return true;
+            }
+            
+            if(c.equals("debug")) {
+                Base.DebugMode = !Base.DebugMode;
+                debug("Debug Mode Enabled!");
+                sendMessage(sender, ChatImportant + (Base.DebugMode ? "Enabled" : "Disabled") + ChatDefault + " debug mode.");
+                return true;
+            }
         }
         
         sendMessage(sender, new String[] {
-            ChatColor.GREEN + " == CreditShops ==",
-            ChatColor.LIGHT_PURPLE + "\tProgrammed by Dom"
+            ChatColor.GREEN + " == " + getPlugin().getName() + " v" + DataManager.PLUGIN_MANAGER.getVersion() + " ==",
+            ChatColor.LIGHT_PURPLE + "\tProgrammed by " + ChatColor.AQUA + "Dominic Masters",
+            ChatColor.LIGHT_PURPLE + "\tInformation: " + ChatColor.GREEN + getBukkitPage()
         });
         return true;
     }

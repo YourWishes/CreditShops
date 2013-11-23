@@ -19,7 +19,6 @@ package com.domsplace.CreditShops.Commands;
 import com.domsplace.CreditShops.Bases.Base;
 import com.domsplace.CreditShops.Bases.BukkitCommand;
 import com.domsplace.CreditShops.Exceptions.InvalidItemException;
-import com.domsplace.CreditShops.Hooks.VaultHook;
 import com.domsplace.CreditShops.Objects.DomsItem;
 import com.domsplace.CreditShops.Objects.ItemPricer;
 import com.domsplace.CreditShops.Objects.SubCommandOption;
@@ -61,10 +60,7 @@ public class PriceCommand extends BukkitCommand {
         
         double worth = ItemPricer.getPrice(item);
         
-        String v = Base.twoDecimalPlaces(worth);
-        try {
-            v = VaultHook.VAULT_HOOK.getEconomy().format(worth);
-        } catch(Exception e) {} catch(Error e) {}
+        String v = Base.formatEcon(worth);
         
         sendMessage(sender, "The worth of " + ChatImportant + 
                 item.toHumanString().replaceAll(ChatDefault, ChatImportant) + ChatDefault + " is " + ChatImportant + 

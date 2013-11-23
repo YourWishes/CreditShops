@@ -16,6 +16,9 @@
 
 package com.domsplace.CreditShops.Objects;
 
+import com.domsplace.CreditShops.Bases.Base;
+import com.domsplace.CreditShops.Exceptions.InvalidItemException;
+import java.util.ArrayList;
 import org.bukkit.entity.Player;
 
 /**
@@ -29,5 +32,49 @@ public class SellableItem extends ShopItem {
 
     @Override
     public void onClick(Player clicker) {
+        double singleWorth = ItemPricer.getPrice(this.getIcon());
+        int selling = 1; //May change
+        double worth = singleWorth * (double) selling;
+        
+        if(this.getShop().getOwner() != null && !this.getShop().getOwner().isOnline()) {
+            Base.sendMessage(clicker, Base.ChatError + "The store owner must be online.");
+            return;
+        }
+        
+        DomsItem item = this.getIcon().copy();
+        item.setLores(new ArrayList<String>());
+        item.setName(null);
+        
+        if(!DomsItem.hasItem(item, selling, clicker.getInventory())) {
+            Base.sendMessage(clicker, Base.ChatError + "You don't have the needed items.");
+            return;
+        }
+        
+        if(Base.useEcon() && this.getShop().getOwner() != null) {
+            double balance = Base.getBalance(this.getShop().getOwner().getName());
+            if(balance < worth) {
+                Base.sendMessage(clicker, Base.ChatError + "The shop owner doesn't have " + Base.formatEcon(worth));
+                return;
+            }
+        }
+        
+        //Charge Owner, give cash to player and take stuff.
+        Base.sendMessage(clicker, "Purchased " + Base.ChatImportant + selling + " " + item.toHumanString().replaceAll(Base.ChatDefault, Base.ChatImportant));
+        
+        if(Base.useEcon()) {
+            Base.chargePlayer(clicker.getName(), -worth);
+            Base.chargePlayer(this.getShop().getOwner(), worth);
+        }
+        
+        try {item.giveToPlayer(this.getShop().getOwner().getPlayer());} catch(Exception e) {}
+        DomsItem.removeItem(item, selling, clicker.getInventory());
+        Base.sendMessage(this.getShop().getOwner(), Base.ChatImportant + 
+                clicker.getDisplayName() + Base.ChatDefault + " just sold " + 
+                Base.ChatImportant + selling + " " + 
+                item.toHumanString().replaceAll(Base.ChatDefault, Base.ChatImportant)
+                + Base.ChatDefault + " to you."
+        );
+        
+        this.setStock(this.getStock() - selling);
     }
 }

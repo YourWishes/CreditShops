@@ -335,6 +335,19 @@ public class DomsItem {
         return new DomsItem(material, data);
     }
     
+    
+    
+    public static List<DomsItem> guessItems(String s) throws InvalidItemException {
+        try {
+            return DomsItem.createItems(s);
+        } catch(InvalidItemException e) {}
+        
+        DomsItem i = guessItem(s);
+        List<DomsItem> x = new ArrayList<DomsItem>();
+        x.add(i);
+        return x;
+    }
+    
     public static List<DomsItem> multiply(DomsItem item, int amount) {
         List<DomsItem> items = new ArrayList<DomsItem>();
         for(int i = 0; i < amount; i++) {
@@ -588,7 +601,7 @@ public class DomsItem {
 
     public void setPage(int page, String l) {this.bookPages.set(page, l);}
     
-    public void addLore(String l) {this.lores.add(l);}
+    public void addLore(String l) {if(this.lores == null) this.lores = new ArrayList<String>(); this.lores.add(l);}
     public void addEnchantment(Enchantment byId, int lvl) {this.enchants.put(byId, lvl);}
     public void addPage(String l) {this.bookPages.add(l);}
     

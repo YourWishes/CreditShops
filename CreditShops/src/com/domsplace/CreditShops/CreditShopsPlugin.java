@@ -35,6 +35,7 @@ public class CreditShopsPlugin extends JavaPlugin {
     private CreditShopsCommand creditShopsCommand;
     private PriceCommand priceCommand;
     private ShopCommand shopCommand;
+    private ShopsCommand shopsCommand;
     private CreateShopCommand createShopCommand;
     
     //Listeners
@@ -65,6 +66,7 @@ public class CreditShopsPlugin extends JavaPlugin {
         this.creditShopsCommand = new CreditShopsCommand();
         this.priceCommand = new PriceCommand();
         this.shopCommand = new ShopCommand();
+        this.shopsCommand = new ShopsCommand();
         this.createShopCommand = new CreateShopCommand();
         
         //Load Listeners
@@ -82,11 +84,6 @@ public class CreditShopsPlugin extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        for(DomsInventoryGUI gui : DomsInventoryGUI.getRegisteredGUIs()) {
-            gui.close();
-            gui.deregister();
-        }
-        
         if(!enabled) {
             return;
         }
@@ -95,6 +92,12 @@ public class CreditShopsPlugin extends JavaPlugin {
         
         DomsThread.stopAllThreads();
         DataManager.saveAll();
+        
+        for(DomsInventoryGUI gui : DomsInventoryGUI.getRegisteredGUIs()) {
+            if(gui == null) continue;
+            gui.close();
+            gui.deregister();
+        }
     }
     
     public void disable() {

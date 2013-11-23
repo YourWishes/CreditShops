@@ -24,6 +24,11 @@ commands:
       usage: /<command> [shop]
       aliases: [createstore, storecreate, shopcreate]
       permission: CreditShops.createshop
+   shops:
+      description: Gets a list of Shops
+      usage: /<command>
+      aliases: [listshops, stores, getshops, liststores, getstores]
+      permission: CreditShops.shops
 permissions:
    CreditShops.*:
      description: Gives access to all CreditShops permissions.
@@ -32,6 +37,7 @@ permissions:
        CreditShops.price: true
        CreditShops.shopsign: true
        CreditShops.shop: true
+       CreditShops.shops: true
        CreditShops.createshop: true
        CreditShops.override: true
    CreditShops.creditshops:
@@ -42,6 +48,8 @@ permissions:
      description: Allows access to create Shop Signs.
    CreditShops.shop:
      description: Allows acces to the shop command.
+   CreditShops.shops:
+     description: Allows acces to the shops command.
    CreditShops.createshop:
      description: Allows acces to the createshop command.
    CreditShops.override:

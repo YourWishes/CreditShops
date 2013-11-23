@@ -64,9 +64,13 @@ public class Base extends RawBase {
     public static final Pattern SEPERATOR_REGEX = Pattern.compile(",\\s*(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
     public static final String ATTRIBUTE_SEPERATOR_REGEX = "\\{(\\s*)(\\w+)\\:(\\s*)(\".*?(?<!\\\\)(\"))(\\s*)\\}";
     
+    public static final String getBukkitPage() {
+        return "http://dev.bukkit.org/bukkit-plugins/creditshops/";
+    }
+    
     //HOOKING OPTIONS
 
-    //String Utils    
+    //String Utils
     public static String getDebugPrefix() {
         return ChatColor.LIGHT_PURPLE + "DEBUG: " + ChatColor.AQUA;
     }
@@ -270,6 +274,7 @@ public class Base extends RawBase {
     }
 
     public static void sendMessage(OfflinePlayer sender, Object... msg) {
+        if(sender == null) return;
         if(!sender.isOnline()) return;
         sendMessage(sender.getPlayer(), msg);
     }
@@ -1014,7 +1019,13 @@ public class Base extends RawBase {
         return Base.twoDecimalPlaces(amt);
     }
     
+    public static void chargePlayer(OfflinePlayer player, double amt) {
+        if(player == null) return;
+        chargePlayer(player.getName(), amt);
+    }
+    
     public static void chargePlayer(String player, double amt) {
+        if(player == null) return;
         try {
             if(amt == 0) return;
             if(amt < 0) {

@@ -17,6 +17,8 @@
 package com.domsplace.CreditShops.Objects;
 
 import com.domsplace.CreditShops.Bases.Base;
+import com.domsplace.CreditShops.Exceptions.InvalidItemException;
+import java.util.ArrayList;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,12 +32,37 @@ public class BuyableItem extends ShopItem {
 
     @Override
     public void onClick(Player clicker) {
-        double cost = ItemPricer.getPrice(this.getIcon());
-        cost *= (double) this.getIconSize();
+        double singleCost = ItemPricer.getPrice(this.getIcon());
+        int purchasing = 1; //May change
+        double cost = singleCost * (double) purchasing;
         
         if(Base.useEcon()) {
             double balance = Base.getBalance(clicker.getName());
-            
+            if(balance < cost) purchasing = 0;
         }
+        
+        if(purchasing <= 0) {
+            Base.sendMessage(clicker, Base.ChatError + "You don't have enough. You need " + Base.formatEcon(cost) + "!");
+            return;
+        }
+        
+        DomsItem item = this.getIcon().copy();
+        item.setLores(new ArrayList<String>());
+        item.setName(null);
+        
+        if(Base.useEcon()) {
+            Base.chargePlayer(clicker.getName(), cost);
+            Base.chargePlayer(this.getShop().getOwner(), -cost);
+        }
+        
+        Base.sendMessage(clicker, "Purchased " + Base.ChatImportant + purchasing + " " + item.toHumanString().replaceAll(Base.ChatDefault, Base.ChatImportant));
+        try {for(int i = 0; i < purchasing; i++) {
+            item.giveToPlayer(clicker);
+        }} catch(InvalidItemException e) {}
+            
+        Base.sendMessage(this.getShop().getOwner(), clicker.getDisplayName() + Base.ChatDefault + 
+                " just purchased " + Base.ChatImportant + purchasing + " " + item.toHumanString().replaceAll(Base.ChatDefault, Base.ChatImportant));
+        
+        this.setStock(this.getStock() - purchasing);
     }
 }

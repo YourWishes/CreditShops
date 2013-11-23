@@ -35,6 +35,8 @@ public class ShopCommand extends BukkitCommand {
     public ShopCommand() {
         super("shop");
         this.addSubCommandOption(SubCommandOption.SHOP_OPTION);
+        this.addSubCommandOption(new SubCommandOption("sell", SubCommandOption.ITEM_OPTION));
+        this.addSubCommandOption(new SubCommandOption("buy", SubCommandOption.ITEM_OPTION));
     }
     
     @Override
@@ -69,7 +71,7 @@ public class ShopCommand extends BukkitCommand {
                         x += args[i] + " ";
                     }
                     try {
-                        buy = DomsItem.createItems(x);
+                        buy = DomsItem.guessItems(x);
                     } catch(InvalidItemException e) {
                         sendMessage(sender, ChatError + "Please enter a valid item name.");
                         return true;
@@ -118,7 +120,7 @@ public class ShopCommand extends BukkitCommand {
                         x += args[i] + " ";
                     }
                     try {
-                        sell = DomsItem.createItems(x);
+                        sell = DomsItem.guessItems(x);
                     } catch(InvalidItemException e) {
                         sendMessage(sender, ChatError + "Please enter a valid item name.");
                         return true;

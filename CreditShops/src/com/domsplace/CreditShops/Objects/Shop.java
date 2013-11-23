@@ -23,6 +23,22 @@ public class Shop {
     private static final List<Shop> SHOPS = new ArrayList<Shop>();
     public static final Shop GLOBAL_SHOP = new Shop("Server Store", null);
     
+    public static final String[] RESERVED_NAMES = new String[] {
+        "sell", "buy"
+    };
+    
+    public static final boolean isNameValid(String name) {
+        if(!name.matches(SHOP_NAME_REGEX)) return false;
+        if(name.length() > MAX_SHOP_NAME_LENGTH) return false;
+        if(name.length() < 1) return false;
+        
+        for(String res : RESERVED_NAMES) {
+            if(name.equalsIgnoreCase(res)) return false;
+        }
+        
+        return true;
+    }
+    
     public static List<Shop> getShops() {return new ArrayList<Shop>(SHOPS);}
     
     public static Shop getShop(String x) {
@@ -148,7 +164,6 @@ public class Shop {
         
         DomsItem buyButtonIcon = new DomsItem(Material.CHEST);
         buyButtonIcon.setName(ChatColor.LIGHT_PURPLE + "Buy");
-        buyButtonIcon.setLores(new ArrayList<String>());
         buyButtonIcon.addLore(ChatColor.AQUA + "Click to buy from the store.");
         ShopButton buyButton = new ShopButton(this.gui, buyButtonIcon, this){
             @Override
@@ -160,7 +175,6 @@ public class Shop {
         
         DomsItem sellButtonIcon = new DomsItem(Material.GOLD_INGOT);
         sellButtonIcon.setName(ChatColor.GOLD + "Sell");
-        sellButtonIcon.setLores(new ArrayList<String>());
         sellButtonIcon.addLore(ChatColor.GREEN + "Click to sell items to the store.");
         ShopButton sellButton = new ShopButton(this.gui, sellButtonIcon, this){
             @Override
@@ -170,9 +184,21 @@ public class Shop {
             }
         };
         
+        if(this.owner != null) {
+            DomsItem ownerItem = new DomsItem(Material.SKULL_ITEM, new Short("3"));
+            ownerItem.setPlayerHead(this.owner);
+            ownerItem.setName(ChatColor.RED + "Store is owned");
+            ownerItem.addLore(Base.ChatDefault + "Store owned by " + Base.ChatImportant + this.owner.getName() + Base.ChatDefault + "!");
+            ShopButton playerHeadButton = new ShopButton(this.gui, ownerItem, this){
+                @Override
+                public void onClick(Player player) {
+                    Base.sendMessage(player, this.getIcon().getPlayerHead().getName() + ": §fOW! My Face!");
+                }
+            };
+        }
+        
         DomsItem backButtonIcon = new DomsItem(Material.WOOD_BUTTON);
         backButtonIcon.setName(ChatColor.RED + "Go Back");
-        backButtonIcon.setLores(new ArrayList<String>());
         backButtonIcon.addLore(ChatColor.DARK_RED + "Click to go back.");
         ShopButton backButton = new ShopButton(this.buy, backButtonIcon, this) {
             @Override
@@ -188,6 +214,7 @@ public class Shop {
     }
     
     public String getName() {return this.gui.getName();}
+    public OfflinePlayer getOwner() {return this.owner;}
     public DomsInventoryGUI getGUI() {return this.gui;}
     public DomsInventoryGUI getBuy() {return this.buy;}
     public DomsInventoryGUI getSell() {return this.sell;}
@@ -215,16 +242,24 @@ public class Shop {
         this.update();
     }
     
+    public void removeItemForSaleNoUpdate(ShopItem item) {
+        this.itemsForSale.remove(item);
+    }
+    
+    public void removeItemForSellingNoUpdate(ShopItem item) {
+        this.itemsForSelling.remove(item);
+    }
+    
     public void open(Player player) {
         player.closeInventory();
         player.openInventory(this.gui.getInventory());
     }
     
     public final void update() {
-        for(ShopItem item : this.itemsForSale) {
+        for(ShopItem item : new ArrayList<ShopItem>(this.itemsForSale)) {
             item.update();
         }
-        for(ShopItem item : this.itemsForSelling) {
+        for(ShopItem item : new ArrayList<ShopItem>(this.itemsForSelling)) {
             item.update();
         }
         
@@ -263,7 +298,7 @@ public class Shop {
         
         if(yml == null) return saveError ("Failed to remove old data.");
         
-        if(this.itemsForSale != null && this.itemsForSale.size() > 1) {
+        if(this.itemsForSale != null && this.itemsForSale.size() > 0) {
             //Store Items that are for sale.//
             int id = 0;
             for(ShopItem item : this.itemsForSale) {
@@ -279,7 +314,7 @@ public class Shop {
         }
         if(yml == null) return saveError ("Failed to remove old data.");
         
-        if(this.itemsForSelling != null && this.itemsForSelling.size() > 1) {
+        if(this.itemsForSelling != null && this.itemsForSelling.size() > 0) {
             int id = 0;
             for(ShopItem item : this.itemsForSelling) {
                 id++;

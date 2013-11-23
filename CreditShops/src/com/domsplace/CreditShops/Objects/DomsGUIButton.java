@@ -35,4 +35,8 @@ public abstract class DomsGUIButton {
     public void setIconSize(int amt) {this.iconSize = amt; this.gui.update();}
     
     public abstract void onClick(Player clicker);
+    
+    public void remove() {
+        gui.removeButton(this);
+    }
 }

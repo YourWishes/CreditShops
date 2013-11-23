@@ -33,7 +33,15 @@ public abstract class ShopItem extends ShopButton {
             icon.addLore(ChatImportant + this.stock + ChatDefault + " remaining.");
         } else {
             icon.addLore("" + ChatColor.DARK_RED + ChatColor.BOLD + "No Stock Remaining.");
+            this.remove();
         }
         this.setIcon(icon, this.getStock());
+    }
+    
+    @Override
+    public void remove() {
+        super.remove();
+        this.getShop().removeItemForSaleNoUpdate(this);
+        this.getShop().removeItemForSellingNoUpdate(this);
     }
 }

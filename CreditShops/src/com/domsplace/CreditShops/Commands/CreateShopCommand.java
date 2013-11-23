@@ -24,7 +24,6 @@ import static com.domsplace.CreditShops.Bases.Base.sendMessage;
 import com.domsplace.CreditShops.Bases.BukkitCommand;
 import com.domsplace.CreditShops.Objects.Shop;
 import com.domsplace.CreditShops.Objects.SubCommandOption;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -68,8 +67,8 @@ public class CreateShopCommand extends BukkitCommand {
             return true;
         }
         
-        if(!name.matches(Shop.SHOP_NAME_REGEX)) {
-            sendMessage(sender, ChatError + "Store name contains an invalid symbol.");
+        if(!Shop.isNameValid(name)) {
+            sendMessage(sender, ChatError + "Store name is invalid.");
             return true;
         }
                 
