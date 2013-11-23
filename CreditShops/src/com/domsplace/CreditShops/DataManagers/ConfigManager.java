@@ -55,6 +55,7 @@ public class ConfigManager extends DataManager {
         df("money.startingbalance", 100.0d);
         
         df("cost.createshop.price", 100.0d);
+        df("cost.closeshop.refundprice", 50.0d);
         df("cost.createsign.price", 100.0d);
         df("cost.createsign.refundprice", 50.0d);
         

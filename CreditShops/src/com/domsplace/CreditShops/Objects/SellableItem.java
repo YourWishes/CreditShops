@@ -26,12 +26,27 @@ import org.bukkit.entity.Player;
  * @author Dominic Masters
  */
 public class SellableItem extends ShopItem {
+    private boolean clicked;
+    
     public SellableItem(Shop shop, DomsItem item, int amt) {
         super(shop.getSell(), item, shop, amt);
     }
 
     @Override
     public void onClick(Player clicker) {
+        if(this.getShop().isOwner(clicker)) {
+            if(!clicked) {
+                Base.sendMessage(clicker, ChatError + "You cannot sell this. Click again to take it out of the store.");
+                clicked = true;
+                return;
+            }
+            
+            //Remove
+            sendMessage(clicker, "Removed item for selling.");
+            this.setStock(0);
+            return;
+        }
+        
         double singleWorth = ItemPricer.getPrice(this.getIcon());
         int selling = 1; //May change
         double worth = singleWorth * (double) selling;

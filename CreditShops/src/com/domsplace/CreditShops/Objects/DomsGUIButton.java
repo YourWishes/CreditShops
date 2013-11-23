@@ -6,13 +6,14 @@
 
 package com.domsplace.CreditShops.Objects;
 
+import com.domsplace.CreditShops.Bases.Base;
 import org.bukkit.entity.Player;
 
 /**
  *
  * @author Dominic Masters
  */
-public abstract class DomsGUIButton {
+public abstract class DomsGUIButton extends Base {
     private DomsInventoryGUI gui;
     private DomsItem icon;
     private int iconSize;

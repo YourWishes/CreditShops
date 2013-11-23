@@ -26,12 +26,31 @@ import org.bukkit.entity.Player;
  * @author Dominic Masters
  */
 public class BuyableItem extends ShopItem {
+    private boolean clicked;
+    
     public BuyableItem(Shop shop, DomsItem item, int amt) {
         super(shop.getBuy(), item, shop, amt);
     }
 
     @Override
     public void onClick(Player clicker) {
+        if(this.getShop().isOwner(clicker)) {
+            if(!clicked) {
+                Base.sendMessage(clicker, ChatError + "You cannot buy this. Click again to take it out of the store.");
+                clicked = true;
+                return;
+            }
+            
+            //Remove
+            DomsItem item = this.getIcon().copy();
+            item.setLores(new ArrayList<String>());
+            item.setName(null);
+            for(int i = 0; i < this.getStock(); i++) {try {item.giveToPlayer(clicker);}catch(InvalidItemException e) {}}
+            sendMessage(clicker, "Removed item for sale.");
+            this.setStock(0);
+            return;
+        }
+        
         double singleCost = ItemPricer.getPrice(this.getIcon());
         int purchasing = 1; //May change
         double cost = singleCost * (double) purchasing;

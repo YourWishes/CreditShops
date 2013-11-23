@@ -16,13 +16,19 @@
 
 package com.domsplace.CreditShops.Commands;
 
+import com.domsplace.CreditShops.Bases.Base;
+import static com.domsplace.CreditShops.Bases.Base.ChatImportant;
+import static com.domsplace.CreditShops.Bases.Base.getConfig;
+import static com.domsplace.CreditShops.Bases.Base.sendMessage;
 import com.domsplace.CreditShops.Bases.BukkitCommand;
 import com.domsplace.CreditShops.Exceptions.InvalidItemException;
 import com.domsplace.CreditShops.Objects.BuyableItem;
 import com.domsplace.CreditShops.Objects.DomsItem;
 import com.domsplace.CreditShops.Objects.SellableItem;
 import com.domsplace.CreditShops.Objects.Shop;
+import com.domsplace.CreditShops.Objects.ShopItem;
 import com.domsplace.CreditShops.Objects.SubCommandOption;
+import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -139,6 +145,39 @@ public class ShopCommand extends BukkitCommand {
                 
                 sendMessage(sender, "Your store now accepts " + ChatImportant + sell.size() + " " + sell.get(0).toHumanString() + ChatDefault + " for selling.");
                 s.addItemForSelling(new SellableItem(s, sell.get(0), sell.size()));
+                return true;
+            }
+            
+            if(c.equalsIgnoreCase("close")) {
+                s = Shop.getShopFromPlayer(getPlayer(sender));
+                if(s == null) {
+                    sendMessage(sender, ChatError +  "You don't own a shop.");
+                    return true;
+                }
+                
+                for(ShopItem item : s.getItemsForSale()) {
+                    DomsItem i = item.getIcon().copy();
+                    i.setName(null);
+                    i.setLores(new ArrayList<String>());
+                    for(int x = 0; x < item.getStock(); x++) {
+                        try {i.giveToPlayer(getPlayer(sender));}catch(InvalidItemException e) {}
+                    }
+                }
+                
+                
+        
+                if(Base.useEcon()) {
+                    double refund = getConfig().getDouble("cost.closeshop.refundprice", 0.0d);
+                    if(refund > 0) {
+                        Base.chargePlayer(sender.getName(), -refund);
+                        sendMessage(sender, ChatImportant + "Refunded " + Base.formatEcon(refund) + ".");
+                    }
+                }
+                
+                s.delete();
+                s.deregister();
+                s = null;
+                sendMessage(sender, "Closed shop.");
                 return true;
             }
             

@@ -24,7 +24,7 @@ public class Shop {
     public static final Shop GLOBAL_SHOP = new Shop("Server Store", null);
     
     public static final String[] RESERVED_NAMES = new String[] {
-        "sell", "buy"
+        "sell", "buy", "close", "create"
     };
     
     public static final boolean isNameValid(String name) {
@@ -330,8 +330,20 @@ public class Shop {
         return true;
     }
     
+    public void close() {
+        this.gui.close();
+        this.buy.close();
+        this.sell.close();
+    }
+    
     private boolean saveError(String cause) {
         Base.log("Error saving Shop \"" + (this.getName() == null ? "Unknown" : this.getName()) + "\", " + cause);
         return false;
+    }
+
+    public void delete() {
+        File file = new File(ShopManager.STORE_FOLDER, this.getName().toLowerCase() + ".yml");
+        if(file.exists()) file.delete();
+        this.close();
     }
 }
