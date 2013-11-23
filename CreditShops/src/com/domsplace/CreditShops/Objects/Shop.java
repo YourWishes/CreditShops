@@ -67,10 +67,11 @@ public class Shop {
         if(yml == null) return loadError("Failed to load YML", filename);
         
         if(!yml.contains("name")) return loadError("Failed to load Name", filename);
-        if(!yml.contains("owner")) return loadError ("Failed to load Owner", filename);
+        //if(!yml.contains("owner")) return loadError ("Failed to load Owner", filename);
         
         String name = yml.getString("name");
-        OfflinePlayer player = Bukkit.getOfflinePlayer(yml.getString("owner"));
+        OfflinePlayer player = null;
+        if(yml.contains("owner")) player = Bukkit.getOfflinePlayer(yml.getString("owner"));
         
         Shop shop;
         if(name.equalsIgnoreCase(Shop.GLOBAL_SHOP.getName())) {
@@ -127,7 +128,7 @@ public class Shop {
     private final List<ShopItem> itemsForSale;
     private final List<ShopItem> itemsForSelling;
     
-    private OfflinePlayer owner;
+    private final OfflinePlayer owner;
     
     public Shop(String name, OfflinePlayer owner) {
         name = Base.trim(name, MAX_SHOP_NAME_LENGTH);
@@ -183,6 +184,7 @@ public class Shop {
         this.sell.addButton(backButton);
         
         this.register();
+        this.save();
     }
     
     public String getName() {return this.gui.getName();}
@@ -195,7 +197,7 @@ public class Shop {
     public void addItemForSale(ShopItem item) {this.itemsForSale.add(item); this.update();}
     public void addItemForSelling(ShopItem item) {this.itemsForSelling.add(item); this.update();}
     
-    public final void register() {SHOPS.add(this);}
+    public final void register() {SHOPS.add(this); Base.debug("Registered Store " + this.getName());}
     public final void deregister() {SHOPS.remove(this);}
     
     public boolean isOwner(OfflinePlayer player) {
@@ -231,7 +233,7 @@ public class Shop {
         this.sell.update();
     }
     
-    public boolean save() {
+    public final boolean save() {
         File folder = ShopManager.STORE_FOLDER;
         if(!folder.exists()) {
             if(!folder.mkdir()) {
@@ -252,7 +254,7 @@ public class Shop {
         if(yml == null) return saveError("Failed to create YML Configuration.");
         
         yml.set("name", this.getName());
-        yml.set("owner", this.owner.getName().toLowerCase());
+        if(this.owner != null) yml.set("owner", this.owner.getName().toLowerCase());
         
         if(yml.contains("sale")) {
             //Clear//

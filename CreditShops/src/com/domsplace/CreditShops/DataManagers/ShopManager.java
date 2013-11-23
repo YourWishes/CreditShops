@@ -21,7 +21,6 @@ import com.domsplace.CreditShops.Enums.ManagerType;
 import com.domsplace.CreditShops.Objects.Shop;
 import java.io.File;
 import java.io.IOException;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * @author      Dominic
@@ -30,15 +29,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class ShopManager extends DataManager {
     public static File STORE_FOLDER = new File(getDataFolder(), "stores");
     
-    private YamlConfiguration config;
-    private File configFile;
-    
     public ShopManager() {
         super(ManagerType.SHOP);
-    }
-    
-    public YamlConfiguration getCFG() {
-        return config;
     }
     
     @Override
@@ -65,23 +57,5 @@ public class ShopManager extends DataManager {
         for(Shop s : Shop.getShops()) {
             s.save();
         }
-    }
-    
-    private void df(String key, Object o) {
-        if(config.contains(key)) return;
-        config.set(key, o);
-    }
-    
-    private String gs(String key) {
-        return gs(key, "");
-    }
-    
-    private String gs(String key, String dv) {
-        if(!config.contains(key)) return dv;
-        return config.getString(key);
-    }
-    
-    private String loadColor(String key) {
-        return colorise(gs("colors." + key, "&7"));
     }
 }
