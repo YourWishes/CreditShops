@@ -42,7 +42,9 @@ public class ShopCommand extends BukkitCommand {
         super("shop");
         this.addSubCommandOption(SubCommandOption.SHOP_OPTION);
         this.addSubCommandOption(new SubCommandOption("sell", SubCommandOption.ITEM_OPTION));
+        this.addSubCommandOption(new SubCommandOption("close"));
         this.addSubCommandOption(new SubCommandOption("buy", SubCommandOption.ITEM_OPTION));
+        this.addSubCommandOption(new SubCommandOption("price", SubCommandOption.ITEM_OPTION));
     }
     
     @Override
@@ -101,7 +103,9 @@ public class ShopCommand extends BukkitCommand {
                 
                 sendMessage(sender, "Your store now has " + ChatImportant + buy.size() + " " + buy.get(0).toHumanString() + ChatDefault + " for sale.");
                 DomsItem.removeItem(buy.get(0), buy.size(), getPlayer(sender).getInventory());
-                s.addItemForSale(new BuyableItem(s, buy.get(0), buy.size()));
+                BuyableItem item = new BuyableItem(s, buy.get(0), buy.size());
+                s.addItemForSale(item);
+                item.update();
                 return true;
             }
             
@@ -144,7 +148,9 @@ public class ShopCommand extends BukkitCommand {
                 }
                 
                 sendMessage(sender, "Your store now accepts " + ChatImportant + sell.size() + " " + sell.get(0).toHumanString() + ChatDefault + " for selling.");
-                s.addItemForSelling(new SellableItem(s, sell.get(0), sell.size()));
+                SellableItem item = new SellableItem(s, sell.get(0), sell.size());
+                s.addItemForSelling(item);
+                item.update();
                 return true;
             }
             
@@ -178,6 +184,76 @@ public class ShopCommand extends BukkitCommand {
                 s.deregister();
                 s = null;
                 sendMessage(sender, "Closed shop.");
+                return true;
+            }
+            
+            if(c.equalsIgnoreCase("price")) {
+                if(!hasPermission(sender, "CreditShops.shopprice")) return this.noPermission(sender, cmd, label, args);
+                if(args.length < 2) {
+                    sendMessage(sender, ChatError + "Enter an item name or a price.");
+                    return true;
+                }
+                
+                s = Shop.getShopFromPlayer(getPlayer(sender));
+                if(s == null) {
+                    sendMessage(sender, ChatError +  "You don't own a shop.");
+                    return true;
+                }
+                
+                String buySellBoth = "BOTH";
+                
+                DomsItem item;
+                double price = -1d;
+                if(isDouble(args[args.length - 1])) {
+                    price = getDouble(args[args.length - 1]);
+                    if(args.length > 2) {
+                        String x = "";
+                        for(int i = 1; i < args.length - 1; i++) {
+                            if(args[i].equalsIgnoreCase("BUY")) {
+                                buySellBoth = "BUY";
+                            }
+                            if(args[i].equalsIgnoreCase("SELL")) {
+                                buySellBoth = "SELL";
+                            }
+                            if(args[i].equalsIgnoreCase("BOTH")) {
+                                buySellBoth = "BOTH";
+                            }
+                            x += args[i];
+                        }
+                        try {
+                            item = DomsItem.guessItem(x);
+                        } catch(InvalidItemException e) {
+                            sendMessage(sender, ChatError + "Please enter a valid item.");
+                            return true;
+                        }
+                    } else {
+                        item = DomsItem.createItem(getPlayer(sender).getItemInHand());
+                    }
+                } else {
+                    sendMessage(sender, ChatError + "Enter an item price.");
+                    return true;
+                }
+                
+                if(price <= 0) {
+                    sendMessage(sender, ChatError + "Enter a price above 0.");
+                    return true;
+                }
+                
+                if(item == null || item.isAir()) {
+                    sendMessage(sender, ChatError + "Please enter a valid item.");
+                    return true;
+                }
+                
+                boolean buy = buySellBoth.equalsIgnoreCase("BUY") || buySellBoth.equalsIgnoreCase("BOTH");
+                boolean sell = buySellBoth.equalsIgnoreCase("SELL") || buySellBoth.equalsIgnoreCase("BOTH");
+                
+                if(buy) s.setBuyingPrice(item, price);
+                if(sell) s.setSellingPrice(item, price);
+                
+                s.save();
+                sendMessage(sender, "Set the " + (buy ? "Buying" : "Selling") + " of " + ChatImportant + 
+                    item.toHumanString().replaceAll(ChatDefault, ChatImportant) + ChatDefault + " to " 
+                    + ChatImportant + Base.formatEcon(price));
                 return true;
             }
             

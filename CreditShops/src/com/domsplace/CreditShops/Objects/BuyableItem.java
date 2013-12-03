@@ -51,7 +51,7 @@ public class BuyableItem extends ShopItem {
             return;
         }
         
-        double singleCost = ItemPricer.getPrice(this.getIcon());
+        double singleCost = this.getShop().getSellingPrice(this.getIcon());
         int purchasing = 1; //May change
         double cost = singleCost * (double) purchasing;
         

@@ -29,12 +29,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author      Dominic
  * @since       11/10/2013
  */
-public class WorthManager extends DataManager {
+public class BuyableManager extends DataManager {
     private YamlConfiguration yml;
     private File file;
     
-    public WorthManager() {
-        super(ManagerType.WORTH);
+    public BuyableManager() {
+        super(ManagerType.BUYABLE);
     }
     
     public YamlConfiguration getCFG() {
@@ -43,10 +43,10 @@ public class WorthManager extends DataManager {
     
     @Override
     public void tryLoad() throws IOException {
-        this.file = new File(getDataFolder(), "worth.yml");
+        this.file = new File(getDataFolder(), "buyable.yml");
         if(!this.file.exists()) {
             file.createNewFile();
-            this.yml = YamlConfiguration.loadConfiguration(getPlugin().getResource("worth.yml"));
+            this.yml = YamlConfiguration.loadConfiguration(getPlugin().getResource("buyable.yml"));
         } else {
             this.yml = YamlConfiguration.loadConfiguration(file);
         }
@@ -55,16 +55,17 @@ public class WorthManager extends DataManager {
         for(Material m : Material.values()) {
             DomsItem item = new DomsItem(m);
             if(yml.contains(item.toString())) continue;
-            yml.set(item.toString(), 1.00d);
+            yml.set(item.toString(), true);
         }
         
         /*** LOAD DATA BACK IN ***/
-        ItemPricer.ITEM_WORTHS.clear();
+        ItemPricer.BUYABLE.clear();
         for(String item : yml.getKeys(false)) {
             try {
                 DomsItem gItem = DomsItem.createItem(item);
-                double amt = yml.getDouble(item);
-                ItemPricer.ITEM_WORTHS.put(gItem, amt);
+                boolean t = yml.getBoolean(item);
+                if(!t) continue;
+                ItemPricer.BUYABLE.add(gItem);
             } catch(Exception e) {}
         }
         

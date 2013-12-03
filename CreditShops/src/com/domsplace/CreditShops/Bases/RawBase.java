@@ -26,8 +26,6 @@ import java.net.URLConnection;
  * @since       11/10/2013
  */
 public class RawBase {
-    public static int regionSize = 16; //Remember to Subtract 1!
-    
     public static String getStringFromURL(String url) throws Exception {
         URL website = new URL(url);
         URLConnection connection = website.openConnection();

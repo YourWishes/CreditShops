@@ -8,7 +8,9 @@ import com.domsplace.CreditShops.Objects.DomsInventoryGUI.SIZE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,10 +23,10 @@ public class Shop {
     public static final int MAX_SHOP_NAME_LENGTH = 15;
     public static final String SHOP_NAME_REGEX = "^[a-zA-Z0-9]*$";
     private static final List<Shop> SHOPS = new ArrayList<Shop>();
-    public static final Shop GLOBAL_SHOP = new Shop("Server Store", null);
+    public static final Shop GLOBAL_SHOP = new Shop("Server", null);
     
     public static final String[] RESERVED_NAMES = new String[] {
-        "sell", "buy", "close", "create"
+        "sell", "buy", "close", "create", "set", "price", "name"
     };
     
     public static final boolean isNameValid(String name) {
@@ -127,6 +129,15 @@ public class Shop {
                 shop.addItemForSelling(item);
             }
         }
+        
+        if(yml.contains("sellingprices")) {
+            
+        }
+        
+        if(yml.contains("buyingprices")) {
+            
+        }
+        
         shop.update();
         return shop;
     }
@@ -144,11 +155,16 @@ public class Shop {
     private final List<ShopItem> itemsForSale;
     private final List<ShopItem> itemsForSelling;
     
+    private final Map<DomsItem, Double> sellingPrices;
+    private final Map<DomsItem, Double> buyingPrices;
+    
     private final OfflinePlayer owner;
     
     public Shop(String name, OfflinePlayer owner) {
         name = Base.trim(name, MAX_SHOP_NAME_LENGTH);
         this.owner = owner;
+        this.sellingPrices = new HashMap<DomsItem, Double>();
+        this.buyingPrices = new HashMap<DomsItem, Double>();
         
         this.gui = new DomsInventoryGUI(SIZE.SIZE_9);
         this.gui.setName(name);
@@ -220,12 +236,44 @@ public class Shop {
     public DomsInventoryGUI getSell() {return this.sell;}
     public List<ShopItem> getItemsForSale() {return new ArrayList<ShopItem>(this.itemsForSale);}
     public List<ShopItem> getItemsForSelling() {return new ArrayList<ShopItem>(this.itemsForSelling);}
+    public Map<DomsItem, Double> getItemSellingPrices() {return new HashMap<DomsItem, Double>(this.sellingPrices);}
+    public Map<DomsItem, Double> getItemBuyingPrices() {return new HashMap<DomsItem, Double>(this.buyingPrices);}
 
     public void addItemForSale(ShopItem item) {this.itemsForSale.add(item); this.update();}
     public void addItemForSelling(ShopItem item) {this.itemsForSelling.add(item); this.update();}
     
     public final void register() {SHOPS.add(this); Base.debug("Registered Store " + this.getName());}
     public final void deregister() {SHOPS.remove(this);}
+    
+    public double getSellingPrice(DomsItem item) {
+        double x = ItemPricer.getPrice(this.sellingPrices, item);
+        if(x <= 0d) x = ItemPricer.getPrice(item);
+        return x;
+    }
+    
+    public double getBuyingPrice(DomsItem item) {
+        double x = ItemPricer.getPrice(this.buyingPrices, item);
+        if(x <= 0d) x = ItemPricer.getPrice(item);
+        return x;
+    }
+    
+    public void setSellingPrice(DomsItem item, double price) {
+        for(DomsItem re : new HashMap<DomsItem, Double>(this.sellingPrices).keySet()) {
+            if(!re.compare(item)) continue;
+            this.sellingPrices.remove(re);
+        }
+        this.sellingPrices.put(item, price);
+        this.update();
+    }
+    
+    public void setBuyingPrice(DomsItem item, double price) {
+        for(DomsItem re : new HashMap<DomsItem, Double>(this.buyingPrices).keySet()) {
+            if(!re.compare(item)) continue;
+            this.buyingPrices.remove(re);
+        }
+        this.buyingPrices.put(item, price);
+        this.update();
+    }
     
     public boolean isOwner(OfflinePlayer player) {
         if(this.owner == null) return false;
@@ -321,6 +369,32 @@ public class Shop {
                 String key = "sell.item" + id + "";
                 String s = "{size:\"" + item.getStock() + "\"}," + item.getIcon().toString();
                 yml.set(key, s);
+            }
+        }
+        
+        
+        if(yml.contains("sellingprices")) {
+            yml = DataManager.removeFromYml("sellingprices", yml);
+        }
+        if(yml == null) return saveError("Failed to remove old data");
+        
+        if(this.sellingPrices != null && this.sellingPrices.size() > 0) {
+            for(DomsItem item : this.sellingPrices.keySet()) {
+                double amt = this.sellingPrices.get(item);
+                yml.set("sellingprices." + item.toString(), amt);
+            }
+        }
+        
+        
+        if(yml.contains("buyingprices")) {
+            yml = DataManager.removeFromYml("buyingprices", yml);
+        }
+        if(yml == null) return saveError("Failed to remove old data");
+        
+        if(this.buyingPrices != null && this.buyingPrices.size() > 0) {
+            for(DomsItem item : this.buyingPrices.keySet()) {
+                double amt = this.buyingPrices.get(item);
+                yml.set("buyingprices." + item.toString(), amt);
             }
         }
         

@@ -3,7 +3,7 @@ description: 'CreditShops is a plugin for Bukkit Minecraft servers that lets own
 main: com.domsplace.CreditShops.CreditShopsPlugin
 authors: [Dominic, Jordan]
 website: http://domsplace.com/
-version: '1.00'
+version: '1.01'
 softdepend: [Vault]
 commands:
    creditshops:
@@ -29,6 +29,14 @@ commands:
       usage: /<command>
       aliases: [listshops, stores, getshops, liststores, getstores]
       permission: CreditShops.shops
+   buy:
+      description: Buy items from the server at an inflated price.
+      usage: /<command>
+      permission: CreditShops.buy
+   sell:
+      description: Sell items to the server at an inflated price.
+      usage: /<command>
+      permission: CreditShops.sell
 permissions:
    CreditShops.*:
      description: Gives access to all CreditShops permissions.
@@ -40,6 +48,9 @@ permissions:
        CreditShops.shops: true
        CreditShops.createshop: true
        CreditShops.override: true
+       CreditShops.buy: true
+       CreditShops.sell: true
+       CreditShops.shopprice: true
    CreditShops.creditshops:
      description: Allows access to the creditshops command.
    CreditShops.price:
@@ -54,3 +65,9 @@ permissions:
      description: Allows acces to the createshop command.
    CreditShops.override:
      description: Allows acces to bypass shop sign breaking.
+   CreditShops.buy:
+     description: Allows acces to the buy command.
+   CreditShops.sell:
+     description: Allows acces to the sell command.
+   CreditShops.shopprice:
+     description: Allows access to set the prices of items in a player's shop.

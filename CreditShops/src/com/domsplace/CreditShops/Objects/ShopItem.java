@@ -6,6 +6,7 @@
 
 package com.domsplace.CreditShops.Objects;
 
+import com.domsplace.CreditShops.Bases.Base;
 import static com.domsplace.CreditShops.Bases.Base.ChatDefault;
 import static com.domsplace.CreditShops.Bases.Base.ChatImportant;
 import java.util.ArrayList;
@@ -17,20 +18,30 @@ import org.bukkit.ChatColor;
  */
 public abstract class ShopItem extends ShopButton {
     private int stock;
+    private boolean forSale;
     
     public ShopItem(DomsInventoryGUI gui, DomsItem icon, Shop shop, int stock) {
         super(gui, icon, shop);
         this.stock = stock;
+        this.forSale = (this instanceof BuyableItem);
     }
     
     public int getStock() {return this.stock;}
     public void setStock(int stock) {this.stock = stock; this.getShop().update();}
     
-    public final void update() {
+    public void update() {
+        this.forSale = (this instanceof BuyableItem);
         DomsItem icon = this.getIcon().copy();
         icon.setLores(new ArrayList<String>());
         if(this.stock > 0) {
             icon.addLore(ChatImportant + this.stock + ChatDefault + " remaining.");
+            if(Base.useEcon()) {
+                if(this.forSale) {
+                    icon.addLore(ChatImportant + "Cost: " + ChatColor.GREEN + Base.formatEcon(this.getShop().getSellingPrice(icon)));
+                } else {
+                    icon.addLore(ChatImportant + "Worth: " + ChatColor.GREEN + Base.formatEcon(this.getShop().getBuyingPrice(icon)));
+                }
+            }
         } else {
             icon.addLore("" + ChatColor.DARK_RED + ChatColor.BOLD + "No Stock Remaining.");
             this.remove();

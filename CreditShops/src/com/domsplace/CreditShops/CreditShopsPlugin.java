@@ -37,6 +37,8 @@ public class CreditShopsPlugin extends JavaPlugin {
     private ShopCommand shopCommand;
     private ShopsCommand shopsCommand;
     private CreateShopCommand createShopCommand;
+    private BuyCommand buyCommand;
+    private SellCommand sellCommand;
     
     //Listeners
     private DomsGUIListener guiListener;
@@ -57,6 +59,8 @@ public class CreditShopsPlugin extends JavaPlugin {
             return;
         }
         
+        PluginHook.hookAll();
+        
         if(!DataManager.loadAll()) {
             this.disable();
             return;
@@ -68,6 +72,8 @@ public class CreditShopsPlugin extends JavaPlugin {
         this.shopCommand = new ShopCommand();
         this.shopsCommand = new ShopsCommand();
         this.createShopCommand = new CreateShopCommand();
+        this.buyCommand = new BuyCommand();
+        this.sellCommand = new SellCommand();
         
         //Load Listeners
         this.guiListener = new DomsGUIListener();
@@ -75,8 +81,6 @@ public class CreditShopsPlugin extends JavaPlugin {
         
         //Load Threads
         this.configSaveThread = new ConfigSaveThread();
-        
-        PluginHook.hookAll();
         
         this.enabled = true;
         Base.debug("Finished Loading " + this.getName() + ", " + BukkitCommand.getCommands().size() + " commands registered.");

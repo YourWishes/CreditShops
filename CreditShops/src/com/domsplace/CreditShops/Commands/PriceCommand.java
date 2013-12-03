@@ -22,6 +22,8 @@ import com.domsplace.CreditShops.Exceptions.InvalidItemException;
 import com.domsplace.CreditShops.Objects.DomsItem;
 import com.domsplace.CreditShops.Objects.ItemPricer;
 import com.domsplace.CreditShops.Objects.SubCommandOption;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -42,29 +44,38 @@ public class PriceCommand extends BukkitCommand {
             return true;
         }
         
-        DomsItem item = null;
+        List<DomsItem> items;
         if(args.length > 0) {
             try {
-                item = DomsItem.guessItem(Base.arrayToString(args, " "));
+                items = DomsItem.guessItems(Base.arrayToString(args, " "));
             } catch (InvalidItemException ex) {
                 sendMessage(sender, ChatError + "This is an invalid item.");
                 return true;
             }
         } else {
-            item = DomsItem.createItem(getPlayer(sender).getItemInHand());
-            if(item == null || item.isAir()) {
+            items = DomsItem.itemStackToDomsItems(getPlayer(sender).getItemInHand());
+            if(items == null || items.size() < 1 || items.get(0).isAir()) {
                 sendMessage(sender, ChatError + "This is an invalid item.");
                 return true;
             }
         }
         
+        DomsItem item = items.get(0);
+        if(item == null) {
+            sendMessage(sender, ChatError + "This is an invalid item.");
+            return true;
+        }
+        
         double worth = ItemPricer.getPrice(item);
         
-        String v = Base.formatEcon(worth);
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(ChatImportant + "Value of " + Base.listToString(DomsItem.getHumanMessages(items)).replaceAll(ChatDefault, ChatImportant));
+        msgs.add(ChatImportant + "Worth Per Item: " + ChatDefault + Base.formatEcon(worth));
+        msgs.add(ChatImportant + "Total Value: " + ChatDefault + Base.formatEcon(worth * ((double) items.size())));
+        msgs.add(ChatImportant + "Sell Worth: " + ChatDefault + Base.formatEcon(worth * ((double) items.size()) * getConfig().getDouble("cost.command.sell.deflateprice", 1.00d)));
+        msgs.add(ChatImportant + "Buy Worth: " + ChatDefault + Base.formatEcon(worth * ((double) items.size()) * getConfig().getDouble("cost.command.buy.inflateprice", 1.00d)));
         
-        sendMessage(sender, "The worth of " + ChatImportant + 
-                item.toHumanString().replaceAll(ChatDefault, ChatImportant) + ChatDefault + " is " + ChatImportant + 
-                v + ChatDefault + " each.");
+        sendMessage(sender, msgs);
         return true;
     }
 }

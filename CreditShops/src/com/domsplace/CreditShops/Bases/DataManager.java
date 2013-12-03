@@ -34,6 +34,8 @@ public class DataManager extends Base {
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
     public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
     public static final WorthManager WORTH_MANAGER = new WorthManager();
+    public static final BuyableManager BUYABLE_MANAGER = new BuyableManager();
+    public static final SellableManager SELLABLE_MANAGER = new SellableManager();
     public static final ShopManager SHOP_MANAGER = new ShopManager();
     
     private static void registerManager(DataManager manager) {

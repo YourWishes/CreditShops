@@ -47,7 +47,7 @@ public class SellableItem extends ShopItem {
             return;
         }
         
-        double singleWorth = ItemPricer.getPrice(this.getIcon());
+        double singleWorth = this.getShop().getBuyingPrice(this.getIcon());
         int selling = 1; //May change
         double worth = singleWorth * (double) selling;
         

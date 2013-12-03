@@ -52,12 +52,12 @@ public class ConfigManager extends DataManager {
         df("colors.important", "&9");
         df("colors.error", "&c");
         
-        df("money.startingbalance", 100.0d);
-        
         df("cost.createshop.price", 100.0d);
         df("cost.closeshop.refundprice", 50.0d);
         df("cost.createsign.price", 100.0d);
         df("cost.createsign.refundprice", 50.0d);
+        df("cost.command.buy.inflateprice", 1.10d);
+        df("cost.command.sell.deflateprice", 0.90d);
         
         //Store Values
         Base.DebugMode = this.config.getBoolean("debug", false);
