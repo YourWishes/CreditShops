@@ -51,7 +51,7 @@
 '{id:"TORCH"}': 2.0
 '{id:"FIRE"}': 3.0
 '{id:"MOB_SPAWNER"}': 100.0
-'{id:"WOOD_STAIRS"}': 6.0
+'{id:"WOOD_STAIRS"}': 1.5
 '{id:"CHEST"}': 7.0
 '{id:"REDSTONE_WIRE"}': 0.5
 '{id:"DIAMOND_ORE"}': 9.0

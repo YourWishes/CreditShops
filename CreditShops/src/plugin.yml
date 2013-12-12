@@ -3,7 +3,7 @@ description: 'CreditShops is a plugin for Bukkit Minecraft servers that lets own
 main: com.domsplace.CreditShops.CreditShopsPlugin
 authors: [Dominic, Jordan]
 website: http://domsplace.com/
-version: '1.01'
+version: '1.02'
 softdepend: [Vault]
 commands:
    creditshops:

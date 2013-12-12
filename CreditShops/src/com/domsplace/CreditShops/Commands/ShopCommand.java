@@ -211,12 +211,15 @@ public class ShopCommand extends BukkitCommand {
                         for(int i = 1; i < args.length - 1; i++) {
                             if(args[i].equalsIgnoreCase("BUY")) {
                                 buySellBoth = "BUY";
+                                continue;
                             }
                             if(args[i].equalsIgnoreCase("SELL")) {
                                 buySellBoth = "SELL";
+                                continue;
                             }
                             if(args[i].equalsIgnoreCase("BOTH")) {
                                 buySellBoth = "BOTH";
+                                continue;
                             }
                             x += args[i];
                         }
